@@ -109,3 +109,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 4: 导出 Windows exe
+
+**Date**: 2026-06-11
+**Task**: 导出 Windows exe
+**Branch**: `master`
+
+### Summary
+
+补齐 FFmpeg/FFprobe，本地按现有 PyInstaller 配置导出 Windows one-folder exe；修复 GUI start_convert 缺失导致的启动阻塞；验证测试、编译检查和打包产物路径。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4d42d5e` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
