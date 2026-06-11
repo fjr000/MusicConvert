@@ -209,3 +209,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 7: 修复外部命令行窗口弹出
+
+**Date**: 2026-06-11
+**Task**: 修复外部命令行窗口弹出
+**Branch**: `main`
+
+### Summary
+
+增强 Windows GUI 外部 CLI 子进程隐藏策略：统一 helper 同时传 CREATE_NO_WINDOW 与 STARTUPINFO(SW_HIDE)，更新测试和后端质量规范。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `42ca5b3` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete

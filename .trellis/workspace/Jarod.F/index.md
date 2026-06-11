@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 6
+- **Total Sessions**: 7
 - **Last Active**: 2026-06-11
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~211 | Active |
+| `journal-1.md` | ~244 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 7 | 2026-06-11 | 修复外部命令行窗口弹出 | `42ca5b3` | `main` |
 | 6 | 2026-06-11 | 整理项目文件准备远程仓库 | `4857c21` | `master` |
 | 5 | 2026-06-11 | 修复 GUI 转换 CMD 弹窗 | `9186ff7`, `ea699cb` | `master` |
 | 4 | 2026-06-11 | 导出 Windows exe | `4d42d5e` | `master` |
