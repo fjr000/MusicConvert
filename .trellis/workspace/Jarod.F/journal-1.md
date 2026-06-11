@@ -176,3 +176,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 6: 整理项目文件准备远程仓库
+
+**Date**: 2026-06-11
+**Task**: 整理项目文件准备远程仓库
+**Branch**: `master`
+
+### Summary
+
+整理远程提交边界：更新忽略规则和 README，新增第三方工具下载脚本，从 Git 跟踪移除 musicdecrypto.exe，并记录远程工具准备规范。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `4857c21` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
