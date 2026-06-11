@@ -151,6 +151,8 @@ class App:
                     self.folder_items.extend(items)
         self.refresh_inputs()
         return "break"
+
+    def start_convert(self) -> None:
         """Start the batch conversion process."""
         items = self.get_all_items()
         if not items:

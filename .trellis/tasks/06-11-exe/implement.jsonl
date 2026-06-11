@@ -1,0 +1,5 @@
+{"file":".trellis/tasks/06-11-exe/research/build-context.md","reason":"记录本次导出 exe 的构建步骤、FFmpeg 补齐来源与验收点。"}
+{"file":".trellis/spec/backend/index.md","reason":"后端/脚本任务的通用规范入口；本任务不改应用代码但需遵守项目质量约束。"}
+{"file":".trellis/spec/frontend/index.md","reason":"如需修复 GUI 启动阻塞问题，参考前端规范入口。"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"GUI 组件修复时参考组件约束；当前文件为占位规范但应注入上下文。"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"GUI 质量验收时参考质量约束；当前文件为占位规范但应注入上下文。"}

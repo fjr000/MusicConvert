@@ -1,0 +1,5 @@
+{"file":".trellis/tasks/06-11-exe/research/build-context.md","reason":"用于核对 FFmpeg 文件、PyInstaller 产物路径和打包验收标准。"}
+{"file":".trellis/spec/backend/index.md","reason":"质量检查时参考项目后端/脚本通用规范入口。"}
+{"file":".trellis/spec/frontend/index.md","reason":"检查 GUI 启动阻塞问题时参考前端规范入口。"}
+{"file":".trellis/spec/frontend/component-guidelines.md","reason":"GUI 组件检查时参考组件约束。"}
+{"file":".trellis/spec/frontend/quality-guidelines.md","reason":"GUI 质量检查时参考质量约束。"}
