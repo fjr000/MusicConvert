@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/index.md","reason":"Python 桌面应用后端式代码、打包配置和工具目录整理需要遵守后端入口规范。"}
+{"file":".trellis/spec/backend/directory-structure.md","reason":"确认现有 app/、tools/、docs/ 等目录职责，避免无关重构。"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"包含 PyInstaller bundled tools 与 Windows 外部 CLI 工具约定，和本任务的第三方工具下载/打包说明直接相关。"}
+{"file":".trellis/spec/guides/index.md","reason":"整理仓库配置前按项目思考指南检查复用、跨文件一致性和搜索优先原则。"}

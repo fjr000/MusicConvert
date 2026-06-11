@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/index.md","reason":"质量检查需以项目后端规范入口为准。"}
+{"file":".trellis/spec/backend/directory-structure.md","reason":"验证仓库整理未破坏既有目录职责和最小变更原则。"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"检查 PyInstaller 工具布局、测试命令和第三方 CLI 约定是否保持一致。"}
+{"file":".trellis/spec/guides/index.md","reason":"复核跨文件说明、忽略规则和脚本的一致性。"}
