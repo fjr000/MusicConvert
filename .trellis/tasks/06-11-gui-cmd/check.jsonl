@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "检查转换后端改动是否符合项目分层规范"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "检查 Windows 打包工具链相关行为与测试验证"}

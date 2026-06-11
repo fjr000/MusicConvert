@@ -35,7 +35,7 @@ class DecryptorTestCase(unittest.TestCase):
             source = Path(temp_dir) / "a.qmc0"
             source.write_bytes(b"encrypted")
 
-            def fake_run(command, capture_output, text):
+            def fake_run(command, capture_output, text, **kwargs):
                 staged_source = Path(command[-1])
                 staged_source.with_name("a.mp3").write_bytes(b"ID3")
                 return type("Result", (), {"returncode": 0, "stdout": "", "stderr": ""})()
@@ -50,6 +50,24 @@ class DecryptorTestCase(unittest.TestCase):
             self.assertTrue(staged_source.exists())
             cleanup_decrypted_path(output)
             self.assertFalse(output.parent.exists())
+
+    @patch("app.decryptor.subprocess.run")
+    def test_decrypt_audio_to_temp_passes_hidden_window_kwargs(self, run_mock) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            source = Path(temp_dir) / "a.qmc0"
+            source.write_bytes(b"encrypted")
+
+            def fake_run(command, capture_output, text, **kwargs):
+                staged_source = Path(command[-1])
+                staged_source.with_name("a.mp3").write_bytes(b"ID3")
+                return type("Result", (), {"returncode": 0, "stdout": "", "stderr": ""})()
+
+            run_mock.side_effect = fake_run
+            with patch("app.decryptor.hidden_subprocess_kwargs", return_value={"creationflags": 123}):
+                output = decrypt_audio_to_temp(source)
+
+            self.assertEqual(run_mock.call_args[1]["creationflags"], 123)
+            cleanup_decrypted_path(output)
 
 
 if __name__ == "__main__":

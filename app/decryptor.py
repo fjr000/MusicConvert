@@ -6,6 +6,7 @@ from pathlib import Path
 
 from app.config import ENCRYPTED_AUDIO_PREFIXES, ENCRYPTED_AUDIO_SUFFIXES
 from app.ffmpeg_tools import get_musicdecrypto_path
+from app.subprocess_utils import hidden_subprocess_kwargs
 
 
 class DecryptError(Exception):
@@ -49,7 +50,7 @@ def decrypt_audio_to_temp(source_path: Path) -> Path:
     shutil.copy2(source_path, staged_source)
     command = build_decrypt_command(staged_source)
     try:
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output=True, text=True, **hidden_subprocess_kwargs())
     except FileNotFoundError:
         shutil.rmtree(temp_dir, ignore_errors=True)
         raise

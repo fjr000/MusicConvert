@@ -7,6 +7,7 @@ from app.decryptor import DecryptError, cleanup_decrypted_path, decrypt_audio_to
 from app.ffmpeg_tools import get_ffmpeg_path, get_ffprobe_path
 from app.file_ops import build_output_path, is_supported_input, make_unique_path
 from app.models import ConvertResult, SourceItem
+from app.subprocess_utils import hidden_subprocess_kwargs
 
 
 class ConvertError(Exception):
@@ -35,7 +36,7 @@ def probe_audio(path: Path) -> None:
         "json",
         str(path),
     ]
-    result = subprocess.run(command, capture_output=True, text=True)
+    result = subprocess.run(command, capture_output=True, text=True, **hidden_subprocess_kwargs())
     if result.returncode != 0:
         message = result.stderr.strip() or "无法读取音频信息"
         raise ConvertError(message)
@@ -78,7 +79,7 @@ def convert_one(source_path: Path, output_path: Path, target_format: str) -> Con
             cleanup_path = actual_source_path
         probe_audio(actual_source_path)
         command = build_ffmpeg_command(actual_source_path, output_path)
-        result = subprocess.run(command, capture_output=True, text=True)
+        result = subprocess.run(command, capture_output=True, text=True, **hidden_subprocess_kwargs())
         if result.returncode != 0:
             message_lines = result.stderr.strip().splitlines()
             message = message_lines[-1] if message_lines else "转换失败"

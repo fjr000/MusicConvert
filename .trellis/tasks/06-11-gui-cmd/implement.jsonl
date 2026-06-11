@@ -1,0 +1,2 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "外部 CLI 调用与转换后端代码的入口规范"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "PyInstaller/Windows 打包工具链与测试验证要求"}

@@ -33,6 +33,26 @@ class ConverterTestCase(unittest.TestCase):
             self.assertEqual(result.output_path, output)
 
     @patch("app.converter.subprocess.run")
+    def test_convert_one_passes_hidden_window_kwargs(self, run_mock) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            source = root / "a.mp3"
+            output = root / "b.wav"
+            source.write_bytes(b"1")
+
+            run_mock.side_effect = [
+                type("Result", (), {"returncode": 0, "stdout": '{"streams":[{"codec_type":"audio"}]}', "stderr": ""})(),
+                type("Result", (), {"returncode": 0, "stdout": "", "stderr": ""})(),
+            ]
+
+            with patch("app.converter.hidden_subprocess_kwargs", return_value={"creationflags": 123}):
+                result = convert_one(source, output, "wav")
+
+            self.assertTrue(result.success)
+            self.assertEqual(run_mock.call_args_list[0][1]["creationflags"], 123)
+            self.assertEqual(run_mock.call_args_list[1][1]["creationflags"], 123)
+
+    @patch("app.converter.subprocess.run")
     def test_convert_one_supports_encrypted_audio(self, run_mock) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
