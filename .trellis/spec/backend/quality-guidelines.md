@@ -166,18 +166,20 @@ result = subprocess.run(command, capture_output=True, text=True, **hidden_subpro
 
 ### 3. Contracts
 - On Windows (`os.name == "nt"`) with `subprocess.CREATE_NO_WINDOW` available, pass `creationflags=subprocess.CREATE_NO_WINDOW`.
-- On non-Windows platforms, return `{}` and do not pass Windows-only `creationflags`.
+- On Windows, also pass `startupinfo=subprocess.STARTUPINFO()` with `dwFlags |= subprocess.STARTF_USESHOWWINDOW` and `wShowWindow = subprocess.SW_HIDE` to explicitly hide any child console window.
+- On non-Windows platforms, return `{}` and do not pass Windows-only `creationflags` or `startupinfo`.
 - Do not change stdout/stderr capture, text decoding, return-code handling, or error parsing when adding this helper.
 
 ### 4. Validation & Error Matrix
 - Windows GUI subprocess without hidden flags -> visible CMD console popup for each conversion.
-- Non-Windows subprocess with Windows-only `creationflags` -> platform-specific failure risk.
+- Windows GUI subprocess with only `CREATE_NO_WINDOW` but no `STARTUPINFO(SW_HIDE)` -> some external tools may still show a visible command window; set both in the shared helper.
+- Non-Windows subprocess with Windows-only `creationflags` / `startupinfo` -> platform-specific failure risk.
 - Missing CLI executable -> preserve existing `FileNotFoundError` handling and user-facing missing-tool message.
 
 ### 5. Good/Base/Bad Cases
-- Good: every external conversion/decryption CLI call uses `**hidden_subprocess_kwargs()` and existing parsing stays unchanged.
+- Good: every external conversion/decryption CLI call uses `**hidden_subprocess_kwargs()`; on Windows the helper returns both `creationflags` and hidden `startupinfo`, and existing parsing stays unchanged.
 - Base: direct CLI call in tests can mock `hidden_subprocess_kwargs()` to assert the propagated kwargs.
-- Bad: hardcoding `creationflags` at each call site or passing it unconditionally on non-Windows.
+- Bad: hardcoding `creationflags` at each call site, setting only `CREATE_NO_WINDOW`, or passing Windows-only kwargs unconditionally on non-Windows.
 
 ### 6. Tests Required
 - Unit test `hidden_subprocess_kwargs()` for Windows and non-Windows branches.

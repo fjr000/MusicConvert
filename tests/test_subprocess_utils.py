@@ -9,13 +9,35 @@ class SubprocessUtilsTestCase(unittest.TestCase):
         with patch("app.subprocess_utils.os.name", "posix"):
             self.assertEqual(hidden_subprocess_kwargs(), {})
 
-    def test_hidden_subprocess_kwargs_uses_create_no_window_on_windows(self) -> None:
+    def test_hidden_subprocess_kwargs_hides_window_on_windows(self) -> None:
+        class FakeStartupInfo:
+            def __init__(self) -> None:
+                self.dwFlags = 0
+                self.wShowWindow = None
+
         with patch("app.subprocess_utils.os.name", "nt"), patch(
             "app.subprocess_utils.subprocess.CREATE_NO_WINDOW",
             134217728,
             create=True,
+        ), patch(
+            "app.subprocess_utils.subprocess.STARTUPINFO",
+            FakeStartupInfo,
+            create=True,
+        ), patch(
+            "app.subprocess_utils.subprocess.STARTF_USESHOWWINDOW",
+            1,
+            create=True,
+        ), patch(
+            "app.subprocess_utils.subprocess.SW_HIDE",
+            0,
+            create=True,
         ):
-            self.assertEqual(hidden_subprocess_kwargs(), {"creationflags": 134217728})
+            kwargs = hidden_subprocess_kwargs()
+
+        self.assertEqual(kwargs["creationflags"], 134217728)
+        startupinfo = kwargs["startupinfo"]
+        self.assertEqual(startupinfo.dwFlags, 1)
+        self.assertEqual(startupinfo.wShowWindow, 0)
 
 
 if __name__ == "__main__":
