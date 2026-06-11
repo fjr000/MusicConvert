@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/index.md","reason":"了解本项目后端/转换链路规范入口。"}
+{"file":".trellis/spec/backend/directory-structure.md","reason":"理解转换、文件收集、工具路径模块职责，避免误改产品代码。"}
+{"file":".trellis/spec/backend/error-handling.md","reason":"评测转换失败时需按既有 ConvertResult/中文错误约定解读。"}
+{"file":".trellis/tasks/06-11-format-evaluation/research/encrypted-sample-sources.md","reason":"加密格式样本来源、覆盖范围和合规判断。"}

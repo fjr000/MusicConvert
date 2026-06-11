@@ -1,0 +1,4 @@
+{"file":".trellis/spec/backend/index.md","reason":"质量检查规范入口。"}
+{"file":".trellis/spec/backend/error-handling.md","reason":"核对失败结果是否符合用户可读错误与批处理不中断约定。"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"执行最终质量检查时参考项目质量要求。"}
+{"file":".trellis/tasks/06-11-format-evaluation/research/encrypted-sample-sources.md","reason":"核对报告中的样本来源与覆盖状态是否有依据。"}
