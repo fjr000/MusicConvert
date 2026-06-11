@@ -1,0 +1,2 @@
+{"file":".trellis/spec/backend/index.md","reason":"质量检查需以项目后端规范入口为准。"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"检查隐藏 Windows 外部 CLI 子进程窗口的实现、调用点和测试是否满足合约。"}

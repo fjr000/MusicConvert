@@ -1,0 +1,2 @@
+{"file":".trellis/spec/backend/index.md","reason":"Python 桌面应用后端式代码修改需要遵守后端规范入口。"}
+{"file":".trellis/spec/backend/quality-guidelines.md","reason":"包含 Windows GUI external CLI subprocesses 合约，本任务直接修复外部 CLI 命令行窗口弹出。"}
