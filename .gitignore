@@ -20,6 +20,9 @@ dist/
 tools/ffmpeg/*.exe
 tools/musicdecrypto/*.exe
 
+# 打包产物 exe 不入库（PyInstaller 输出，体积大）
+*.exe
+
 # 本地下载/解压临时目录
 .tmp-tools/
 
