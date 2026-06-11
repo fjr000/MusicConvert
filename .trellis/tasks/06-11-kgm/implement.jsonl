@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "当前改动主要是本地转换后端流程扩展，需要遵守 backend 层约束"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "KGM 前置解密失败需要统一错误处理与用户提示"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "涉及外部解密器调用与失败信息裁剪，需参考日志/错误暴露边界"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "实现阶段需要遵守 backend 代码质量约束"}
+{"file": ".trellis/spec/guides/index.md", "reason": "共享 thinking guide 入口，提醒复用与跨层边界检查"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "KGM 前置处理需优先复用现有转换与工具查找逻辑"}
+{"file": ".trellis/tasks/06-11-kgm/research/kgm-solution-options.md", "reason": "实现时需要参考已确认的 KGM 技术路线与限制"}

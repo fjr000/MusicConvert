@@ -7,6 +7,7 @@ SUPPORTED_INPUT_FORMATS = (
     "ogg",
     "opus",
     "wma",
+    "kgm",
 )
 
 SUPPORTED_OUTPUT_FORMATS = (

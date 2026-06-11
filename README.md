@@ -16,7 +16,7 @@
 
 ### 输入
 
-`mp3` `wav` `flac` `m4a` `aac` `ogg` `opus` `wma`
+`mp3` `wav` `flac` `m4a` `aac` `ogg` `opus` `wma` `kgm`
 
 ### 输出
 
@@ -62,6 +62,8 @@ pyinstaller music_converter.spec
 - 首版目标是 Windows 便携版，不承诺跨平台
 - 请随程序一起分发 `ffmpeg` / `ffprobe` 二进制
 - 请补充 FFmpeg 来源、许可证文本和对应说明
+- `.kgm` 会先做本地离线解密，再进入现有转换流程
+- 某个 `.kgm` 解密失败时只影响当前文件，不中断整批
 - 不承诺支持冷门、私有或 DRM 音频格式
 
 ## 自检
