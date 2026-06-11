@@ -1,4 +1,5 @@
 import tempfile
+import threading
 import unittest
 from pathlib import Path
 from unittest.mock import patch
@@ -126,6 +127,83 @@ class ConverterTestCase(unittest.TestCase):
 
             args = convert_one_mock.call_args[0]
             self.assertEqual(args[1], output_dir / "a" / "b.ogg")
+
+    @patch("app.converter.convert_one")
+    def test_convert_many_reports_progress(self, convert_one_mock) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            output_dir = root / "out"
+            items = [
+                SourceItem(source_path=root / "a.mp3", relative_path=Path("a.mp3")),
+                SourceItem(source_path=root / "b.mp3", relative_path=Path("b.mp3")),
+            ]
+            convert_one_mock.return_value = type("R", (), {"success": True})()
+            progress_calls: list[tuple[int, int, SourceItem]] = []
+
+            convert_many(
+                items,
+                output_dir,
+                "ogg",
+                progress_callback=lambda index, total, item: progress_calls.append((index, total, item)),
+            )
+
+            self.assertEqual(progress_calls, [(1, 2, items[0]), (2, 2, items[1])])
+
+    @patch("app.converter.convert_one")
+    def test_convert_many_reports_each_result(self, convert_one_mock) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            output_dir = root / "out"
+            items = [
+                SourceItem(source_path=root / "a.mp3", relative_path=Path("a.mp3")),
+                SourceItem(source_path=root / "b.mp3", relative_path=Path("b.mp3")),
+            ]
+            fake_results = [object(), object()]
+            convert_one_mock.side_effect = fake_results
+            received: list[object] = []
+
+            results = convert_many(items, output_dir, "ogg", result_callback=received.append)
+
+            self.assertEqual(received, fake_results)
+            self.assertEqual(results, fake_results)
+
+    @patch("app.converter.convert_one")
+    def test_convert_many_stops_after_cancel(self, convert_one_mock) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            output_dir = root / "out"
+            items = [
+                SourceItem(source_path=root / "a.mp3", relative_path=Path("a.mp3")),
+                SourceItem(source_path=root / "b.mp3", relative_path=Path("b.mp3")),
+                SourceItem(source_path=root / "c.mp3", relative_path=Path("c.mp3")),
+            ]
+            convert_one_mock.return_value = type("R", (), {"success": True})()
+            cancel_event = threading.Event()
+
+            results = convert_many(
+                items,
+                output_dir,
+                "ogg",
+                result_callback=lambda result: cancel_event.set(),
+                cancel_event=cancel_event,
+            )
+
+            self.assertEqual(len(results), 1)
+            self.assertEqual(convert_one_mock.call_count, 1)
+
+    @patch("app.converter.convert_one")
+    def test_convert_many_with_preset_cancel_converts_nothing(self, convert_one_mock) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            output_dir = root / "out"
+            items = [SourceItem(source_path=root / "a.mp3", relative_path=Path("a.mp3"))]
+            cancel_event = threading.Event()
+            cancel_event.set()
+
+            results = convert_many(items, output_dir, "ogg", cancel_event=cancel_event)
+
+            self.assertEqual(results, [])
+            convert_one_mock.assert_not_called()
 
 
 if __name__ == "__main__":

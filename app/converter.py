@@ -1,5 +1,7 @@
 import json
 import subprocess
+import threading
+from collections.abc import Callable
 from pathlib import Path
 
 from app.config import SUPPORTED_OUTPUT_FORMATS
@@ -97,12 +99,33 @@ def convert_one(source_path: Path, output_path: Path, target_format: str) -> Con
         cleanup_decrypted_path(cleanup_path)
 
 
-def convert_many(items: list[SourceItem], output_dir: Path, target_format: str) -> list[ConvertResult]:
-    """Convert multiple audio files, ensuring unique output paths for conflicts."""
+def convert_many(
+    items: list[SourceItem],
+    output_dir: Path,
+    target_format: str,
+    progress_callback: Callable[[int, int, SourceItem], None] | None = None,
+    result_callback: Callable[[ConvertResult], None] | None = None,
+    cancel_event: threading.Event | None = None,
+) -> list[ConvertResult]:
+    """
+    Convert multiple audio files, ensuring unique output paths for conflicts.
+
+    Optional hooks for GUI integration:
+    - progress_callback(index, total, item): called before converting each file (index is 1-based)
+    - result_callback(result): called after each file finishes
+    - cancel_event: checked before each file; when set, remaining files are skipped
+    """
     results: list[ConvertResult] = []
-    for item in items:
+    total = len(items)
+    for index, item in enumerate(items, start=1):
+        if cancel_event is not None and cancel_event.is_set():
+            break
+        if progress_callback is not None:
+            progress_callback(index, total, item)
         output_path = build_output_path(output_dir, item.relative_path, target_format)
         output_path = make_unique_path(output_path)
         result = convert_one(item.source_path, output_path, target_format)
         results.append(result)
+        if result_callback is not None:
+            result_callback(result)
     return results
