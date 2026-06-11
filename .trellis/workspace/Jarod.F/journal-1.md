@@ -142,3 +142,37 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 5: 修复 GUI 转换 CMD 弹窗
+
+**Date**: 2026-06-11
+**Task**: 修复 GUI 转换 CMD 弹窗
+**Branch**: `master`
+
+### Summary
+
+修复 Windows GUI 转换时外部 CLI 弹出 CMD 窗口的问题；统一隐藏 ffprobe、ffmpeg、MusicDecrypto 子进程窗口参数，补充测试与后端规范。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9186ff7` | (see git log) |
+| `ea699cb` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
