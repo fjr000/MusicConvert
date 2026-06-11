@@ -20,11 +20,11 @@ class App:
     def __init__(self) -> None:
         self.root = TkinterDnD.Tk()
         self.root.title("音乐格式转换器")
-        self.root.geometry("840x640")
-        self.root.minsize(700, 560)
+        self.root.geometry("840x720")
+        self.root.minsize(700, 640)
 
         self.items: dict[str, SourceItem] = {}
-        self.output_dir = tk.StringVar()
+        self.output_dir = tk.StringVar(value="outputs")
         self.target_format = tk.StringVar(value=SUPPORTED_OUTPUT_FORMATS[0])
         self.summary_var = tk.StringVar(value="尚未选择输入")
         self.progress_var = tk.StringVar(value="")
@@ -81,7 +81,7 @@ class App:
 
         input_frame = ttk.LabelFrame(frame, text="待转换项目（支持拖放文件/文件夹，Delete 键或右键删除所选）", padding=8)
         input_frame.pack(fill=tk.BOTH, expand=True, pady=(0, 12))
-        self.input_tree = ttk.Treeview(input_frame, columns=("type", "path"), selectmode="extended", height=10)
+        self.input_tree = ttk.Treeview(input_frame, columns=("type", "path"), selectmode="extended", height=8)
         self.input_tree.heading("#0", text="文件名")
         self.input_tree.heading("type", text="类型")
         self.input_tree.heading("path", text="源路径")
@@ -112,18 +112,17 @@ class App:
         self.cancel_button.pack(side=tk.LEFT, padx=(8, 0))
         ttk.Label(frame, textvariable=self.progress_var).pack(anchor=tk.W, pady=(0, 8))
 
-        result_frame = ttk.LabelFrame(frame, text="转换结果", padding=8)
+        result_frame = ttk.LabelFrame(frame, text="转换日志", padding=8)
         result_frame.pack(fill=tk.BOTH, expand=True)
-        self.result_text = tk.Text(result_frame, height=8, wrap=tk.NONE, state=tk.DISABLED)
-        self.result_text.tag_configure("ok", foreground="#1a7f37")
-        self.result_text.tag_configure("fail", foreground="#cf222e")
-        self.result_text.tag_configure("info", foreground="#57606a")
+        self.result_text = tk.Text(result_frame, height=10, font=("Microsoft YaHei UI", 9), bg="white", wrap=tk.WORD, relief=tk.FLAT, borderwidth=0, padx=8, pady=8)
+        self.result_text.tag_configure("ok", foreground="#1a7f37", font=("Microsoft YaHei UI", 9))
+        self.result_text.tag_configure("fail", foreground="#cf222e", font=("Microsoft YaHei UI", 9))
         result_scrollbar_y = ttk.Scrollbar(result_frame, orient=tk.VERTICAL, command=self.result_text.yview)
         result_scrollbar_x = ttk.Scrollbar(result_frame, orient=tk.HORIZONTAL, command=self.result_text.xview)
         self.result_text.config(yscrollcommand=result_scrollbar_y.set, xscrollcommand=result_scrollbar_x.set)
+        self.result_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         result_scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
         result_scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
-        self.result_text.pack(fill=tk.BOTH, expand=True)
 
     def pick_files(self) -> None:
         paths = filedialog.askopenfilenames(title="选择音频文件")
@@ -135,7 +134,7 @@ class App:
                 messagebox.showwarning("提示", "所选文件中没有支持的音频格式")
 
     def pick_folder(self) -> None:
-        folder = filedialog.askdirectory(title="选择音频文件夹")
+        folder = filedialog.askdirectory(title="选择音频文件夹", initialdir="inputs")
         if folder:
             items = collect_folder_items(folder)
             if items:
@@ -213,15 +212,16 @@ class App:
         return "break"
 
     def _clear_results(self) -> None:
-        self.result_text.config(state=tk.NORMAL)
         self.result_text.delete("1.0", tk.END)
-        self.result_text.config(state=tk.DISABLED)
 
-    def _append_result_line(self, line: str, tag: str) -> None:
-        self.result_text.config(state=tk.NORMAL)
-        self.result_text.insert(tk.END, line, tag)
+    def _append_result(self, result: ConvertResult) -> None:
+        if result.success:
+            target = result.output_path.name if result.output_path else "?"
+            self.result_text.insert(tk.END, f"[成功] {result.source_path.name} → {target}\n", "ok")
+        else:
+            self.result_text.insert(tk.END, f"[失败] {result.source_path.name}\n", "fail")
+            self.result_text.insert(tk.END, f"       错误: {result.message}\n", "fail")
         self.result_text.see(tk.END)
-        self.result_text.config(state=tk.DISABLED)
 
     def start_convert(self) -> None:
         if self._converting:
@@ -281,11 +281,7 @@ class App:
             elif kind == "result":
                 result: ConvertResult = message[1]
                 self.progress_bar.config(value=self.progress_bar.cget("value") + 1)
-                if result.success:
-                    output_name = result.output_path.name if result.output_path else "?"
-                    self._append_result_line(f"✓ 成功: {result.source_path.name} -> {output_name}\n", "ok")
-                else:
-                    self._append_result_line(f"✗ 失败: {result.source_path.name} | {result.message}\n", "fail")
+                self._append_result(result)
             elif kind == "done":
                 _, results, cancelled = message
                 done = True
@@ -296,10 +292,13 @@ class App:
     def _finish_convert(self, results: list[ConvertResult], cancelled: bool) -> None:
         success_count = sum(1 for r in results if r.success)
         failed_count = len(results) - success_count
-        summary = f"完成：成功 {success_count} 个，失败 {failed_count} 个"
+        self.result_text.insert(tk.END, "\n" + "="*60 + "\n")
         if cancelled:
-            summary = f"已取消：成功 {success_count} 个，失败 {failed_count} 个，剩余未转换"
-        self._append_result_line(f"\n{summary}\n", "info")
+            summary = f"已取消 - 成功: {success_count}  失败: {failed_count}  剩余未转换"
+        else:
+            summary = f"转换完成 - 成功: {success_count}  失败: {failed_count}"
+        self.result_text.insert(tk.END, summary + "\n")
+        self.result_text.see(tk.END)
         self.progress_var.set(summary)
         self._set_converting_state(False)
         if cancelled:
