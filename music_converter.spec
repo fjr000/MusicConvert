@@ -5,10 +5,14 @@ from pathlib import Path
 block_cipher = None
 project_root = Path.cwd()
 ffmpeg_dir = project_root / "tools" / "ffmpeg"
+musicdecrypto_dir = project_root / "tools" / "musicdecrypto"
 datas = []
 
 if ffmpeg_dir.exists():
     datas.append((str(ffmpeg_dir), "tools/ffmpeg"))
+
+if musicdecrypto_dir.exists():
+    datas.append((str(musicdecrypto_dir), "tools/musicdecrypto"))
 
 
 a = Analysis(

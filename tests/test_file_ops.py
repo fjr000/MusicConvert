@@ -46,6 +46,17 @@ class FileOpsTestCase(unittest.TestCase):
 
             self.assertEqual(items, [])
 
+    def test_collect_file_items_accepts_encrypted_suffix(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            encrypted = root / "a.mflac"
+            encrypted.write_bytes(b"1")
+
+            items = collect_file_items([str(encrypted)])
+
+            self.assertEqual(len(items), 1)
+            self.assertEqual(items[0].source_path, encrypted)
+
     def test_collect_folder_items_skips_unsupported_files(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -56,6 +67,19 @@ class FileOpsTestCase(unittest.TestCase):
             items = collect_folder_items(str(root))
 
             self.assertEqual(items, [])
+
+    def test_collect_folder_items_accepts_qmc_prefix(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            nested = root / "x"
+            nested.mkdir()
+            target = nested / "a.qmc999"
+            target.write_bytes(b"1")
+
+            items = collect_folder_items(str(root))
+
+            self.assertEqual(len(items), 1)
+            self.assertEqual(items[0].source_path, target)
 
     def test_build_output_path_and_unique_name(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

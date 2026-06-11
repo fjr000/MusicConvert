@@ -3,9 +3,9 @@ import subprocess
 from pathlib import Path
 
 from app.config import SUPPORTED_OUTPUT_FORMATS
+from app.decryptor import DecryptError, cleanup_decrypted_path, decrypt_audio_to_temp, is_encrypted_audio_file
 from app.ffmpeg_tools import get_ffmpeg_path, get_ffprobe_path
 from app.file_ops import build_output_path, is_supported_input, make_unique_path
-from app.kgm import KgmError, decrypt_kgm_to_temp, is_kgm_file
 from app.models import ConvertResult, SourceItem
 
 
@@ -61,8 +61,8 @@ def convert_one(source_path: Path, output_path: Path, target_format: str) -> Con
     actual_source_path = source_path
     cleanup_path: Path | None = None
     try:
-        if is_kgm_file(source_path):
-            actual_source_path = decrypt_kgm_to_temp(source_path)
+        if is_encrypted_audio_file(source_path):
+            actual_source_path = decrypt_audio_to_temp(source_path)
             cleanup_path = actual_source_path
         probe_audio(actual_source_path)
         command = build_ffmpeg_command(actual_source_path, output_path)
@@ -73,16 +73,15 @@ def convert_one(source_path: Path, output_path: Path, target_format: str) -> Con
             return build_failed_result(source_path, message)
         return ConvertResult(source_path, output_path, True, "转换成功")
     except FileNotFoundError:
-        return build_failed_result(source_path, "未找到 ffmpeg 或 ffprobe，请检查内置文件")
-    except KgmError as error:
-        return build_failed_result(source_path, f"KGM 解密失败：{error}")
+        return build_failed_result(source_path, "未找到 ffmpeg、ffprobe 或解密工具，请检查内置文件")
+    except DecryptError:
+        return build_failed_result(source_path, "解密失败，请检查文件是否受支持")
     except ConvertError as error:
         return build_failed_result(source_path, str(error))
     except json.JSONDecodeError:
         return build_failed_result(source_path, "音频探测结果解析失败")
     finally:
-        if cleanup_path is not None:
-            cleanup_path.unlink(missing_ok=True)
+        cleanup_decrypted_path(cleanup_path)
 
 
 def convert_many(items: list[SourceItem], output_dir: Path, target_format: str) -> list[ConvertResult]:

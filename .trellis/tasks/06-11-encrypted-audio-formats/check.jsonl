@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "检查实现是否遵守后端层约束与预开发清单。"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "核对加密格式失败路径、用户提示和临时文件清理是否符合规范。"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "检查第三方依赖失败信息是否被适当裁剪。"}
+{"file": ".trellis/spec/guides/index.md", "reason": "检查是否遗漏共享指南要求。"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "确认实现没有绕开现有转换主链路。"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "检查格式识别、转换和文档提示是否一致。"}
+{"file": ".trellis/tasks/06-11-encrypted-audio-formats/prd.md", "reason": "检查实现是否与当前确认的 MVP 范围和边界一致。"}

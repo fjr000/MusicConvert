@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "实现加密格式前置解密与转换链路改动前，需要先读后端层总规范和清单。"}
+{"file": ".trellis/spec/backend/error-handling.md", "reason": "加密格式失败提示、单文件失败不中断整批、前置解密清理都受这里约束。"}
+{"file": ".trellis/spec/backend/logging-guidelines.md", "reason": "若引入第三方解密依赖，需要控制错误暴露边界与日志粒度。"}
+{"file": ".trellis/spec/guides/index.md", "reason": "实现前需要加载共享思维指南与跨层注意事项。"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "本任务要求尽量复用现有 probe/ffmpeg 流程，避免新增并行链路。"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "输入格式扩展会影响扫描、识别、转换结果与文档边界。"}

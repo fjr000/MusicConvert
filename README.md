@@ -16,7 +16,14 @@
 
 ### 输入
 
-`mp3` `wav` `flac` `m4a` `aac` `ogg` `opus` `wma` `kgm`
+普通音频：`mp3` `wav` `flac` `m4a` `aac` `ogg` `opus` `wma`
+
+加密音频：`ncm` `tm2` `tm6` `qmc0` `qmc2` `qmc3` `qmc4` `qmc6` `qmc8` `qmcogg` `qmcflac` `tkm` `bkcmp3` `bkcm4a` `bkcwma` `bkcogg` `bkcwav` `bkcape` `bkcflac` `mgg` `mgg1` `mggl` `mflac` `mflac0` `mmp4` `6d7033` `6d3461` `6f6767` `776176` `666c6163` `kgm` `kgma` `vpr` `kwm` `x2m` `x3m` `xm`
+
+说明：
+- 额外识别 `qmc*` 前缀变种，例如 `.qmc999`，并按上游 CLI 的扩展检测模式处理
+- 与普通音频重名的加密后缀（如普通 `.mp3` / `.flac`）首版不额外探测
+- `mgg` / `mflac` 系列按上游工具说明仅做首版接入，个别样本可能仍会失败
 
 ### 输出
 
@@ -31,14 +38,15 @@ pip install -r requirements.txt
 python -m app.main
 ```
 
-## FFmpeg 放置方式
+## 工具放置方式
 
 开发和打包时都优先从以下位置查找：
 
 - `tools/ffmpeg/ffmpeg.exe`
 - `tools/ffmpeg/ffprobe.exe`
+- `tools/musicdecrypto/musicdecrypto.exe`
 
-如果是 PyInstaller 打包后的目录运行，也会优先从程序解包目录中的 `tools/ffmpeg/` 查找。
+如果是 PyInstaller 打包后的目录运行，也会优先从程序解包目录中的对应 `tools/` 子目录查找。
 
 ## 打包 one-folder
 
@@ -48,6 +56,7 @@ python -m app.main
 - 可运行的 Python 3
 - `tools/ffmpeg/ffmpeg.exe`
 - `tools/ffmpeg/ffprobe.exe`
+- `tools/musicdecrypto/musicdecrypto.exe`（Windows x64 CLI）
 
 执行：
 
@@ -61,9 +70,11 @@ pyinstaller music_converter.spec
 
 - 首版目标是 Windows 便携版，不承诺跨平台
 - 请随程序一起分发 `ffmpeg` / `ffprobe` 二进制
-- 请补充 FFmpeg 来源、许可证文本和对应说明
-- `.kgm` 会先做本地离线解密，再进入现有转换流程
-- 某个 `.kgm` 解密失败时只影响当前文件，不中断整批
+- 请随程序一起分发 `MusicDecrypto` 的 Windows x64 CLI
+- 请补充第三方工具来源、许可证文本和对应说明，`MusicDecrypto` 说明可见 `tools/musicdecrypto/THIRD_PARTY.md`
+- 加密音频会先调用 `MusicDecrypto` 做本地离线解密，再进入现有转换流程
+- 某个加密文件解密失败时只影响当前文件，不中断整批
+- 用户侧失败提示保持简短中文，不展示底层长日志或堆栈
 - 不承诺支持冷门、私有或 DRM 音频格式
 
 ## 自检

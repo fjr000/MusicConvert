@@ -1,11 +1,12 @@
 from pathlib import Path
 
 from app.config import AUDIO_SUFFIXES
+from app.decryptor import is_encrypted_audio_file
 from app.models import SourceItem
 
 
 def is_supported_input(path: Path) -> bool:
-    return path.suffix.lower() in AUDIO_SUFFIXES
+    return path.suffix.lower() in AUDIO_SUFFIXES or is_encrypted_audio_file(path)
 
 
 def collect_file_items(paths: list[str]) -> list[SourceItem]:

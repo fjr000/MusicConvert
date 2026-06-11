@@ -70,39 +70,43 @@ Use `ConvertError` for expected probe/validation failures discovered during conv
 ### Scenario: Encrypted input preprocessing
 
 #### 1. Scope / Trigger
-- Trigger: supported input is an encrypted container such as `.kgm`, which must be decrypted to a temporary plain-audio file before probe and ffmpeg steps can run.
+- Trigger: supported input is an encrypted container such as `.kgm`, `.ncm`, or QQ music encrypted variants, which must be decrypted to a temporary plain-audio file before probe and ffmpeg steps can run.
 
 #### 2. Signatures
-- `is_kgm_file(path: Path) -> bool`
-- `decrypt_kgm_to_temp(source_path: Path) -> Path`
+- `is_encrypted_audio_file(path: Path) -> bool`
+- `decrypt_audio_to_temp(source_path: Path) -> Path`
+- `cleanup_decrypted_path(path: Path | None) -> None`
 - `convert_one(source_path: Path, output_path: Path, target_format: str) -> ConvertResult`
 
 #### 3. Contracts
 - Encrypted-input preprocessing happens inside `convert_one()` and remains transparent to GUI and batch callers.
 - Decrypt success -> use the temporary plain-audio file for `ffprobe` and `ffmpeg`.
-- Decrypt failure -> return failed `ConvertResult` with a short Chinese message prefixed by `KGM 解密失败：`.
+- Decrypt failure -> return failed `ConvertResult` with a short Chinese message such as `解密失败，请检查文件是否受支持`.
 - Temporary decrypted files are intermediate artifacts only and must be deleted in `finally`, regardless of later probe/convert success.
 - Do not expose raw stack traces or full tool logs to the user-facing result list.
+- Plain audio formats with overlapping suffixes such as normal `.mp3` / `.flac` must not enter the encrypted-input branch unless the product explicitly adds an extra detection step.
 
 #### 4. Validation & Error Matrix
-- invalid or truncated KGM header -> `KGM 解密失败：KGM 文件头无效`
-- unsupported KGM variant -> `KGM 解密失败：暂不支持该 KGM 文件`
+- unsupported encrypted variant or tool failure -> `解密失败，请检查文件是否受支持`
 - decrypt succeeded but probe failed -> return normal probe failure message and still delete temp file
 - decrypt succeeded but ffmpeg failed -> return readable ffmpeg tail message and still delete temp file
+- decrypt tool missing -> `未找到 ffmpeg、ffprobe 或解密工具，请检查内置文件`
 
 #### 5. Good/Base/Bad Cases
-- Good: `.kgm` decrypts to temp audio, converts successfully, temp file is deleted
-- Base: `.kgm` decrypt fails and only that file returns a readable failure
-- Bad: decrypted temp file is left on disk after success or failure
+- Good: encrypted input decrypts to temp audio, converts successfully, temp file is deleted
+- Base: one encrypted file decrypt fails and only that file returns a readable failure
+- Bad: decrypted temp file or temp directory is left on disk after success or failure
 
 #### 6. Tests Required
-- Unit test KGM success path uses decrypted temp file as ffmpeg input and deletes it afterward
-- Unit test KGM decrypt failure returns the prefixed readable message
+- Unit test encrypted success path uses decrypted temp file as ffmpeg input and deletes it afterward
+- Unit test decrypt failure returns the short readable message
 - Unit test probe failure after decrypt still deletes the temp file
+- Unit test encrypted suffix recognition covers both explicit suffixes and supported prefix-based variants
 
 #### 7. Wrong vs Correct
 ##### Wrong
-- Add KGM as a normal suffix and send it directly to `ffprobe`
+- Add encrypted formats as normal suffixes and send them directly to `ffprobe`
+- Route plain `.mp3` / `.flac` inputs through encrypted detection without an explicit product decision
 - Leave decrypted temp files in the output directory or temp directory
 - Return raw decrypt implementation details to end users
 
@@ -110,6 +114,7 @@ Use `ConvertError` for expected probe/validation failures discovered during conv
 - Treat encrypted formats as a preprocessing stage before the shared audio pipeline
 - Always clean temporary decrypted artifacts in `finally`
 - Keep user-facing failure text short and readable
+- Keep plain audio flow unchanged unless a separate encrypted detection branch is intentionally introduced
 
 ## Common Mistakes
 
