@@ -8,7 +8,7 @@
 
 <!-- @@@auto:current-status -->
 - **Active File**: `journal-1.md`
-- **Total Sessions**: 2
+- **Total Sessions**: 3
 - **Last Active**: 2026-06-11
 <!-- @@@/auto:current-status -->
 
@@ -19,7 +19,7 @@
 <!-- @@@auto:active-documents -->
 | File | Lines | Status |
 |------|-------|--------|
-| `journal-1.md` | ~77 | Active |
+| `journal-1.md` | ~111 | Active |
 <!-- @@@/auto:active-documents -->
 
 ---
@@ -29,6 +29,7 @@
 <!-- @@@auto:session-history -->
 | # | Date | Title | Commits | Branch |
 |---|------|-------|---------|--------|
+| 3 | 2026-06-11 | 评测所有支持格式 | `b7c3b36`, `105cadf` | `master` |
 | 2 | 2026-06-11 | 新增 KGM 格式支持 | `9d7a1c4` | `master` |
 | 1 | 2026-06-11 | 完成音乐格式转换器 MVP 与项目骨架提交 | `8fa9fa5`, `c111a90`, `e16895d`, `a5dd8cd`, `54b9d5a` | `master` |
 <!-- @@@/auto:session-history -->

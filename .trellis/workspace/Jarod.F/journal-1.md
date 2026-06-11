@@ -75,3 +75,37 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 3: 评测所有支持格式
+
+**Date**: 2026-06-11
+**Task**: 评测所有支持格式
+**Branch**: `master`
+
+### Summary
+
+完成支持格式评测：调研合规加密样本来源，下载并评测公开样本与普通格式基线，生成中文评测报告；补充加密格式评测约束到后端规范。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `b7c3b36` | (see git log) |
+| `105cadf` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
