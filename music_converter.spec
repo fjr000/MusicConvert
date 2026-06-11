@@ -6,6 +6,8 @@ block_cipher = None
 project_root = Path.cwd()
 ffmpeg_dir = project_root / "tools" / "ffmpeg"
 musicdecrypto_dir = project_root / "tools" / "musicdecrypto"
+inputs_dir = project_root / "inputs"
+outputs_dir = project_root / "outputs"
 datas = []
 
 if ffmpeg_dir.exists():
@@ -13,6 +15,12 @@ if ffmpeg_dir.exists():
 
 if musicdecrypto_dir.exists():
     datas.append((str(musicdecrypto_dir), "tools/musicdecrypto"))
+
+if inputs_dir.exists():
+    datas.append((str(inputs_dir), "inputs"))
+
+if outputs_dir.exists():
+    datas.append((str(outputs_dir), "outputs"))
 
 
 a = Analysis(
@@ -35,16 +43,35 @@ pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
     [],
+    exclude_binaries=True,
     name='音乐格式转换器',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
     console=False,
 )
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.zipfiles,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='音乐格式转换器',
+)
+
+# Post-build: copy inputs/outputs to root
+import shutil
+dist_root = Path('dist/音乐格式转换器')
+internal = dist_root / '_internal'
+for folder in ['inputs', 'outputs']:
+    src = internal / folder
+    dst = dist_root / folder
+    if src.exists():
+        if dst.exists():
+            shutil.rmtree(dst)
+        shutil.copytree(src, dst)
