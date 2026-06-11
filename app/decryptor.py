@@ -9,10 +9,12 @@ from app.ffmpeg_tools import get_musicdecrypto_path
 
 
 class DecryptError(Exception):
+    """Raised when audio decryption fails."""
     pass
 
 
 def is_encrypted_audio_file(path: Path) -> bool:
+    """Check if a file has an encrypted audio format extension."""
     suffix = path.suffix.lower()
     if suffix in ENCRYPTED_AUDIO_SUFFIXES:
         return True
@@ -20,6 +22,7 @@ def is_encrypted_audio_file(path: Path) -> bool:
 
 
 def build_decrypt_command(source_path: Path) -> list[str]:
+    """Build MusicDecrypto CLI command with auto-detection flags."""
     command = [
         str(get_musicdecrypto_path()),
         "-f",
@@ -35,6 +38,12 @@ def _needs_extensive_detection(source_path: Path) -> bool:
 
 
 def decrypt_audio_to_temp(source_path: Path) -> Path:
+    """
+    Decrypt an encrypted audio file to a temporary directory.
+
+    Returns the path to the decrypted file.
+    Raises DecryptError if decryption fails.
+    """
     temp_dir = Path(tempfile.mkdtemp(prefix="music-convert-decrypt-"))
     staged_source = temp_dir / source_path.name
     shutil.copy2(source_path, staged_source)
@@ -53,6 +62,7 @@ def decrypt_audio_to_temp(source_path: Path) -> Path:
 
 
 def cleanup_decrypted_path(path: Path | None) -> None:
+    """Clean up temporary decryption directory with retry on Windows file locks."""
     if path is None:
         return
     parent = path.parent

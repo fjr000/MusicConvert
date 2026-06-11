@@ -3,12 +3,18 @@ from pathlib import Path
 
 
 def get_runtime_root() -> Path:
+    """Get the runtime root directory (PyInstaller bundle or project root)."""
     if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
         return Path(sys._MEIPASS)
     return Path(__file__).resolve().parent.parent
 
 
 def get_tool_path(tool_dir: str, name: str) -> Path:
+    """
+    Locate a tool executable, checking bundled and local paths.
+
+    Priority: bundled (PyInstaller/project) > local cwd > system PATH fallback.
+    """
     file_name = f"{name}.exe"
     root = get_runtime_root()
     bundled = root / "tools" / tool_dir / file_name

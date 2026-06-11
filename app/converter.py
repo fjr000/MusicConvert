@@ -10,6 +10,7 @@ from app.models import ConvertResult, SourceItem
 
 
 class ConvertError(Exception):
+    """Raised when audio conversion validation fails."""
     pass
 
 
@@ -18,6 +19,11 @@ def build_failed_result(source_path: Path, message: str) -> ConvertResult:
 
 
 def probe_audio(path: Path) -> None:
+    """
+    Verify that the file contains valid audio streams using ffprobe.
+
+    Raises ConvertError if the file is invalid or has no audio streams.
+    """
     ffprobe = get_ffprobe_path()
     command = [
         str(ffprobe),
@@ -51,6 +57,12 @@ def build_ffmpeg_command(source_path: Path, output_path: Path) -> list[str]:
 
 
 def convert_one(source_path: Path, output_path: Path, target_format: str) -> ConvertResult:
+    """
+    Convert a single audio file to the target format.
+
+    Handles both plain and encrypted audio files. For encrypted files,
+    decrypts to a temporary location first, then converts the decrypted file.
+    """
     if target_format not in SUPPORTED_OUTPUT_FORMATS:
         return build_failed_result(source_path, "不支持的输出格式")
     if not source_path.is_file():
@@ -85,6 +97,7 @@ def convert_one(source_path: Path, output_path: Path, target_format: str) -> Con
 
 
 def convert_many(items: list[SourceItem], output_dir: Path, target_format: str) -> list[ConvertResult]:
+    """Convert multiple audio files, ensuring unique output paths for conflicts."""
     results: list[ConvertResult] = []
     for item in items:
         output_path = build_output_path(output_dir, item.relative_path, target_format)
