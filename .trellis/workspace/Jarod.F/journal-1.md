@@ -42,3 +42,36 @@
 ### Next Steps
 
 - None - task complete
+
+
+## Session 2: 新增 KGM 格式支持
+
+**Date**: 2026-06-11
+**Task**: 新增 KGM 格式支持
+**Branch**: `master`
+
+### Summary
+
+新增 KGM 输入格式支持，接入本地离线解密预处理，补充错误处理、测试与规格说明，并验证真实样本可转换。
+
+### Main Changes
+
+(Add details)
+
+### Git Commits
+
+| Hash | Message |
+|------|---------|
+| `9d7a1c4` | (see git log) |
+
+### Testing
+
+- [OK] (Add test results)
+
+### Status
+
+[OK] **Completed**
+
+### Next Steps
+
+- None - task complete
