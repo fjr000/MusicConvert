@@ -81,6 +81,7 @@ Use `ConvertError` for expected probe/validation failures discovered during conv
 #### 3. Contracts
 - Encrypted-input preprocessing happens inside `convert_one()` and remains transparent to GUI and batch callers.
 - Decrypt success -> use the temporary plain-audio file for `ffprobe` and `ffmpeg`.
+- Decrypt success must require the decrypt tool to create exactly one output file; do not rely only on the decrypt process exit code.
 - Decrypt failure -> return failed `ConvertResult` with a short Chinese message such as `解密失败，请检查文件是否受支持`.
 - Temporary decrypted files are intermediate artifacts only and must be deleted in `finally`, regardless of later probe/convert success.
 - Do not expose raw stack traces or full tool logs to the user-facing result list.
@@ -122,3 +123,4 @@ Use `ConvertError` for expected probe/validation failures discovered during conv
 - Returning technical errors directly to users without a readable Chinese message.
 - Forgetting that batch mode and single-file mode share the same conversion contract.
 - Adding encrypted formats as plain suffix support without a preprocessing step.
+- Treating an encrypted suffix as fully covered without testing real complete samples for the specific format variant.
