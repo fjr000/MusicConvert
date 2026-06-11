@@ -77,6 +77,26 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-tools.ps1
 
 ## 打包 one-folder
 
+### 一键打包(推荐)
+
+双击仓库根目录的 `build-release.bat`,或执行:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/build-release.ps1
+```
+
+脚本会自动:安装 `requirements.txt` 依赖 → 检查/下载第三方工具 → 准备 `inputs`/`outputs` 目录 → 清理旧产物 → PyInstaller 打包 → 校验产物。
+
+可选开关:
+
+- `-SkipDeps`：跳过 pip 依赖安装
+- `-SkipTools`：跳过第三方工具下载(要求 `tools/` 下已就位)
+- `-Python <路径>`：指定 Python 解释器(默认 `python`)
+
+输出目录:`dist/音乐格式转换器/`,整个文件夹即为便携版,双击 `音乐格式转换器.exe` 运行。
+
+### 手动打包
+
 先准备：
 
 - Windows 环境
