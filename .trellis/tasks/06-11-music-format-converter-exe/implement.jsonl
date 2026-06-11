@@ -1,0 +1,6 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "实现本地转码编排、进程调用与错误处理时参考后端层总规范。"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "实现 tkinter 图形界面时参考前端层总规范。"}
+{"file": ".trellis/spec/guides/index.md", "reason": "该任务同时涉及界面与转换流程，需要通用思考指引避免层间职责混乱。"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "GUI 交互、任务状态、转码执行与错误展示跨层联动，需要提前约束数据流。"}
+{"file": ".trellis/spec/guides/code-reuse-thinking-guide.md", "reason": "项目从零开始，需要避免过早堆重复的格式映射、命令拼装和路径处理逻辑。"}
+{"file": ".trellis/tasks/06-11-music-format-converter-exe/research/tech-options.md", "reason": "实现阶段需要遵循已确认的 FFmpeg、tkinter、PyInstaller 技术路线与边界。"}

@@ -1,0 +1,7 @@
+{"file": ".trellis/spec/backend/index.md", "reason": "检查转码编排、进程调用、错误处理是否符合后端层规范。"}
+{"file": ".trellis/spec/frontend/index.md", "reason": "检查 tkinter 界面结构与交互是否符合前端层规范。"}
+{"file": ".trellis/spec/backend/quality-guidelines.md", "reason": "复核后端质量要求与禁用模式。"}
+{"file": ".trellis/spec/frontend/quality-guidelines.md", "reason": "复核前端质量要求与检查项。"}
+{"file": ".trellis/spec/guides/index.md", "reason": "检查是否遗漏跨层或复用层面的通用约束。"}
+{"file": ".trellis/spec/guides/cross-layer-thinking-guide.md", "reason": "复核界面、状态与转码执行之间的数据流是否清晰。"}
+{"file": ".trellis/tasks/06-11-music-format-converter-exe/research/tech-options.md", "reason": "检查实现是否偏离已确认技术路线和范围边界。"}
