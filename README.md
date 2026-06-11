@@ -54,15 +54,26 @@ python -m unittest discover -s tests
 python -m compileall app tests
 ```
 
-## 工具放置方式
+## 工具准备方式
 
-开发和打包时都优先从以下位置查找：
+第三方命令行工具不提交到仓库。开发和打包前，请先准备以下本地文件：
 
 - `tools/ffmpeg/ffmpeg.exe`
 - `tools/ffmpeg/ffprobe.exe`
 - `tools/musicdecrypto/musicdecrypto.exe`
 
-如果是 PyInstaller 打包后的目录运行，也会优先从程序解包目录中的对应 `tools/` 子目录查找。
+Windows 可直接运行下载脚本：
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/setup-tools.ps1
+```
+
+脚本会从以下上游来源下载到本地临时目录，最终只覆盖上述目标 exe：
+
+- FFmpeg / FFprobe：BtbN FFmpeg Windows LGPL 构建，说明见 `tools/ffmpeg/THIRD_PARTY.md`
+- MusicDecrypto：`davidxuang/MusicDecrypto` v2.4.2，说明见 `tools/musicdecrypto/THIRD_PARTY.md`
+
+也可以手动从上游发布页下载后放到对应目录。打包后的 PyInstaller 目录运行时，会从程序解包目录中的对应 `tools/` 子目录查找。
 
 ## 打包 one-folder
 
@@ -70,9 +81,7 @@ python -m compileall app tests
 
 - Windows 环境
 - 可运行的 Python 3
-- `tools/ffmpeg/ffmpeg.exe`
-- `tools/ffmpeg/ffprobe.exe`
-- `tools/musicdecrypto/musicdecrypto.exe`（Windows x64 CLI）
+- 已按“工具准备方式”放置 `ffmpeg.exe`、`ffprobe.exe`、`musicdecrypto.exe`
 
 执行：
 
@@ -85,9 +94,9 @@ pyinstaller music_converter.spec
 ## 分发注意事项
 
 - ⚠️ 首版目标是 Windows 便携版，不承诺跨平台
-- 📦 请随程序一起分发 `ffmpeg` / `ffprobe` 二进制
-- 🔐 请随程序一起分发 `MusicDecrypto` 的 Windows x64 CLI
-- 📄 请补充第三方工具来源、许可证文本和对应说明
+- 📦 远程仓库不提交 `ffmpeg` / `ffprobe` / `MusicDecrypto` 二进制；分发程序时请按许可证要求自行随包提供
+- 📄 请保留第三方工具来源、许可证文本和对应说明
+  - `FFmpeg` / `FFprobe` 说明见 `tools/ffmpeg/THIRD_PARTY.md`
   - `MusicDecrypto` 说明见 `tools/musicdecrypto/THIRD_PARTY.md`
   - 加密音频方案调研见 `docs/ENCRYPTION_RESEARCH.md`
 - 🔒 加密音频会先调用 `MusicDecrypto` 做本地离线解密，再进入现有转换流程

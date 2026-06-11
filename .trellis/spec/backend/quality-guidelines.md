@@ -52,6 +52,60 @@ Questions to answer:
 
 ---
 
+## Scenario: Remote-ready third-party tool setup
+
+### 1. Scope / Trigger
+- Trigger: preparing the repository for remote publication, changing third-party tool files under `tools/`, or changing the setup script that downloads external CLI tools.
+- Keep source code, tests, and docs in Git; keep local caches, build outputs, sample audio, and third-party executable binaries out of Git.
+
+### 2. Signatures
+- Setup command: `powershell -ExecutionPolicy Bypass -File scripts/setup-tools.ps1`.
+- Target files prepared by the script:
+  - `tools/ffmpeg/ffmpeg.exe`
+  - `tools/ffmpeg/ffprobe.exe`
+  - `tools/musicdecrypto/musicdecrypto.exe`
+
+### 3. Contracts
+- `.gitignore` must ignore local tool executables with `tools/ffmpeg/*.exe` and `tools/musicdecrypto/*.exe`.
+- `.gitignore` must ignore local sample/conversion audio files such as `*.kgm`, common plain audio outputs, and encrypted audio suffixes.
+- `tools/*/THIRD_PARTY.md` remains tracked as the source/license record for external tools.
+- The setup script may write temporary downloads under `.tmp-tools/`, but final tool writes are limited to the target exe paths above.
+- If a tool exe was previously tracked, remove it from Git tracking with `git rm --cached <path>` while leaving the local ignored file available for development.
+
+### 4. Validation & Error Matrix
+- Tracked third-party `.exe` under `tools/` -> remote repository contains binary/vendor risk; remove from tracking and document setup.
+- Missing `THIRD_PARTY.md` for a tool directory -> source/license provenance is unclear; add or update the provenance file.
+- Setup script downloads a release archive but cannot find the expected exe -> fail with a message that names the manual target path.
+- `.gitignore` only excludes samples through `.git/info/exclude` -> other clones can still expose samples; move the rule into shared `.gitignore`.
+
+### 5. Good/Base/Bad Cases
+- Good: Git tracks `tools/ffmpeg/THIRD_PARTY.md`, `tools/musicdecrypto/THIRD_PARTY.md`, and `scripts/setup-tools.ps1`, while local exe files are ignored.
+- Base: README documents manual placement paths even if the setup script cannot run on a developer machine.
+- Bad: committing `tools/musicdecrypto/musicdecrypto.exe` or sample `.kgm` files to make a local build work.
+
+### 6. Tests Required
+- Run `python -m unittest discover -s tests`.
+- Run `python -m compileall app tests`.
+- Parse `scripts/setup-tools.ps1` with PowerShell when the script changes.
+- Run `git check-ignore -v` for representative tool exe files, sample audio files, `.tmp-tools/`, and known local scratch names.
+- Run `git status --short --untracked-files=all` and verify only intended task/work files are visible.
+
+### 7. Wrong vs Correct
+#### Wrong
+```bash
+# Leaves the binary tracked and relies on a local-only exclude for samples.
+git add tools/musicdecrypto/musicdecrypto.exe
+```
+
+#### Correct
+```bash
+# Keep the local binary, but remove it from repository tracking.
+git rm --cached tools/musicdecrypto/musicdecrypto.exe
+git check-ignore -v tools/musicdecrypto/musicdecrypto.exe sample.kgm
+```
+
+---
+
 ## Scenario: PyInstaller one-folder bundled tools
 
 ### 1. Scope / Trigger
