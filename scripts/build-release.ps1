@@ -35,14 +35,18 @@ function Assert-ExitCode($what) {
 if (-not $Python) {
     $candidates = @("python", "python3", "py")
     foreach ($cmd in $candidates) {
-        $found = Get-Command $cmd -ErrorAction SilentlyContinue
-        if ($found) {
-            $Python = $cmd
-            break
+        try {
+            $null = & $cmd --version 2>&1
+            if ($LASTEXITCODE -eq 0) {
+                $Python = $cmd
+                break
+            }
+        } catch {
+            continue
         }
     }
     if (-not $Python) {
-        throw "未找到 Python，请安装 Python 3 或通过 -Python 参数指定路径"
+        throw "未找到可用的 Python，请安装 Python 3 或通过 -Python 参数指定路径"
     }
 }
 
