@@ -11,7 +11,7 @@
 param(
     [switch]$SkipDeps,
     [switch]$SkipTools,
-    [string]$Python = "python"
+    [string]$Python = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -25,6 +25,41 @@ function Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
 function Assert-ExitCode($what) {
     if ($LASTEXITCODE -ne 0) {
         throw "$what 失败(exit $LASTEXITCODE)"
+    }
+}
+
+# 自动查找 Python（优先仓库 .venv，再回退 PATH 和常见安装位置）
+if (-not $Python) {
+    $candidates = @(
+        (Join-Path $Root ".venv\Scripts\python.exe"),
+        "python",
+        "python3",
+        "$env:USERPROFILE\miniconda3\python.exe",
+        "$env:USERPROFILE\anaconda3\python.exe",
+        "C:\Python312\python.exe",
+        "C:\Python311\python.exe",
+        "C:\Python310\python.exe"
+    )
+    foreach ($cmd in $candidates) {
+        $testExe = $cmd
+        if (-not [System.IO.Path]::IsPathRooted($cmd)) {
+            $resolved = Get-Command $cmd -ErrorAction SilentlyContinue
+            if (-not $resolved) { continue }
+            $testExe = $resolved.Source
+        }
+        if (-not (Test-Path $testExe -PathType Leaf)) { continue }
+        try {
+            $v = & $testExe --version 2>&1
+            if ($LASTEXITCODE -eq 0 -and $v -match "Python") {
+                $Python = $testExe
+                break
+            }
+        } catch {
+            continue
+        }
+    }
+    if (-not $Python) {
+        throw "未找到 Python。请先激活 conda/venv 环境，或用 -Python 参数指定路径"
     }
 }
 
