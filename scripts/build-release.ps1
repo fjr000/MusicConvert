@@ -11,12 +11,10 @@
 param(
     [switch]$SkipDeps,
     [switch]$SkipTools,
-    [string]$Python = ""
+    [string]$Python = "python"
 )
 
 $ErrorActionPreference = "Stop"
-
-# 让中文输出不乱码
 try { [Console]::OutputEncoding = [System.Text.Encoding]::UTF8 } catch {}
 
 $AppName = "音乐格式转换器"
@@ -24,33 +22,12 @@ $Root = Resolve-Path (Join-Path $PSScriptRoot "..")
 Set-Location $Root
 
 function Step($msg) { Write-Host "`n==> $msg" -ForegroundColor Cyan }
-
 function Assert-ExitCode($what) {
     if ($LASTEXITCODE -ne 0) {
         throw "$what 失败(exit $LASTEXITCODE)"
     }
 }
 
-# 0. 自动检测 Python
-if (-not $Python) {
-    $candidates = @("python", "python3", "py")
-    foreach ($cmd in $candidates) {
-        $ErrorActionPreference = "SilentlyContinue"
-        $null = & $cmd --version 2>&1
-        $exitCode = $LASTEXITCODE
-        $ErrorActionPreference = "Stop"
-
-        if ($exitCode -eq 0) {
-            $Python = $cmd
-            break
-        }
-    }
-    if (-not $Python) {
-        throw "未找到可用的 Python，请安装 Python 3 或通过 -Python 参数指定路径"
-    }
-}
-
-# 确认 Python 可用
 Step "检查 Python"
 & $Python --version
 Assert-ExitCode "Python 检查"
