@@ -38,6 +38,11 @@ a = Analysis(
     cipher=block_cipher,
     noarchive=False,
 )
+
+# 去重：移除 PyInstaller 自动收集的 FFmpeg DLL（已通过 datas 打包到 tools/ffmpeg/）
+ffmpeg_dll_names = {'avcodec-62.dll', 'avdevice-62.dll', 'avfilter-11.dll',
+                    'avformat-62.dll', 'avutil-60.dll', 'swresample-6.dll', 'swscale-9.dll'}
+a.binaries = [b for b in a.binaries if b[0] not in ffmpeg_dll_names]
 pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
 
 exe = EXE(

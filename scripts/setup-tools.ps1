@@ -10,7 +10,7 @@ $MusicDir = Join-Path $Root "tools\musicdecrypto"
 $FfmpegZip = Join-Path $TempDir "ffmpeg.zip"
 $MusicArchive = Join-Path $TempDir "musicdecrypto.archive"
 
-$FfmpegUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-lgpl.zip"
+$FfmpegUrl = "https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-lgpl-shared.zip"
 $MusicReleaseApi = "https://api.github.com/repos/davidxuang/MusicDecrypto/releases/tags/v2.4.2"
 
 New-Item -ItemType Directory -Force -Path $TempDir, $FfmpegDir, $MusicDir | Out-Null
@@ -56,8 +56,15 @@ Download-File $FfmpegUrl $FfmpegZip
 $FfmpegExtractDir = Join-Path $TempDir "ffmpeg"
 Remove-Item -Recurse -Force -ErrorAction SilentlyContinue $FfmpegExtractDir
 Expand-ToolArchive $FfmpegZip $FfmpegExtractDir
+# shared 构建:ffmpeg/ffprobe 为小壳,共享库以 DLL 形式提供（体积远小于 full 静态构建）。
+# 先清理旧文件（含从 full 构建遗留的大 exe），再复制 exe 与全部 DLL。
+Get-ChildItem -Path (Join-Path $FfmpegDir "*") -Include *.exe, *.dll -ErrorAction SilentlyContinue | Remove-Item -Force
 Copy-First $FfmpegExtractDir "ffmpeg.exe" $FfmpegDir
 Copy-First $FfmpegExtractDir "ffprobe.exe" $FfmpegDir
+Get-ChildItem -Path $FfmpegExtractDir -Recurse -File -Filter *.dll | ForEach-Object {
+    Copy-Item -Force -Path $_.FullName -Destination (Join-Path $FfmpegDir $_.Name)
+    Write-Host "已准备 $(Join-Path $FfmpegDir $_.Name)"
+}
 
 Write-Host "查询 MusicDecrypto v2.4.2 发布资产"
 $Release = Invoke-RestMethod -Uri $MusicReleaseApi -Headers @{ "User-Agent" = "MusicConvert-setup-tools" }
