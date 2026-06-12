@@ -93,26 +93,13 @@ Write-Host "`n打包完成 ✓" -ForegroundColor Green
 Write-Host "产物目录: $DistDir"
 Write-Host "总大小  : $TotalMB MB"
 
-# 7. 生成两个 release zip
+# 7. 生成 release zip (完整版)
 Step "生成 release zip"
-$FullZip = Join-Path $Root "$AppName-v1.0.0-Windows-完整版.zip"
-$LiteZip = Join-Path $Root "$AppName-v1.0.0-Windows-精简版.zip"
+$ReleaseZip = Join-Path $Root "$AppName-v1.0.0-Windows.zip"
 
-# 完整版（含 FFmpeg）
-if (Test-Path $FullZip) { Remove-Item $FullZip -Force }
-Compress-Archive -Path $DistDir -DestinationPath $FullZip -CompressionLevel Optimal
-$fullMB = [math]::Round((Get-Item $FullZip).Length / 1MB, 2)
-Write-Host "完整版: $FullZip ($fullMB MB)"
+if (Test-Path $ReleaseZip) { Remove-Item $ReleaseZip -Force }
+Compress-Archive -Path $DistDir -DestinationPath $ReleaseZip -CompressionLevel Optimal
+$zipMB = [math]::Round((Get-Item $ReleaseZip).Length / 1MB, 2)
+Write-Host "Release: $ReleaseZip ($zipMB MB)"
 
-# 精简版（移除 FFmpeg 后压缩）
-$LiteDir = Join-Path $Root "dist\${AppName}-lite"
-Copy-Item -Recurse -Force $DistDir $LiteDir
-$FfmpegDir = Join-Path $LiteDir "_internal\tools\ffmpeg"
-Get-ChildItem -Path $FfmpegDir -Include *.exe,*.dll -Recurse -ErrorAction SilentlyContinue | Remove-Item -Force
-if (Test-Path $LiteZip) { Remove-Item $LiteZip -Force }
-Compress-Archive -Path $LiteDir -DestinationPath $LiteZip -CompressionLevel Optimal
-Remove-Item -Recurse -Force $LiteDir
-$liteMB = [math]::Round((Get-Item $LiteZip).Length / 1MB, 2)
-Write-Host "精简版: $LiteZip ($liteMB MB，首次启动需联网下载 FFmpeg)"
-
-Write-Host "`n两个版本已生成 ✓" -ForegroundColor Green
+Write-Host "`n打包完成 ✓" -ForegroundColor Green

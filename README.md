@@ -9,14 +9,9 @@
 
 ### 下载使用
 
-前往 [Releases](https://github.com/fjr000/MusicConvert/releases/latest) 下载:
+前往 [Releases](https://github.com/fjr000/MusicConvert/releases/latest) 下载最新版本 zip，解压后双击 `音乐格式转换器.exe` 启动。
 
-| 版本 | 大小 | 适用场景 |
-|------|------|----------|
-| **完整版** ⭐ | ~114 MB | **推荐** - 解压即用,无需联网 |
-| **精简版** | ~37 MB | 网络受限 - 首次启动需联网下载 FFmpeg (~50MB) |
-
-下载后解压,双击 `音乐格式转换器.exe` 启动。
+**大小**: ~94 MB（包含 FFmpeg，解压即用，无需联网）
 
 ## 文档
 
@@ -108,11 +103,7 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-tools.ps1
 powershell -ExecutionPolicy Bypass -File scripts/build-release.ps1
 ```
 
-脚本会自动生成两个版本:
-- **完整版**: 包含 FFmpeg,解压即用
-- **精简版**: 不含 FFmpeg,首次启动自动下载
-
-完整流程: 安装 `requirements.txt` 依赖 → 检查/下载第三方工具 → 准备 `inputs`/`outputs` 目录 → 清理旧产物 → PyInstaller 打包 → 生成两个 zip。
+完整流程: 检测 Python → 安装 `requirements.txt` 依赖 → 检查/下载第三方工具 → 准备 `inputs`/`outputs` 目录 → 清理旧产物 → PyInstaller 打包 → 生成 zip。
 
 可选开关:
 
@@ -120,7 +111,7 @@ powershell -ExecutionPolicy Bypass -File scripts/build-release.ps1
 - `-SkipTools`：跳过第三方工具下载(要求 `tools/` 下已就位)
 - `-Python <路径>`：指定 Python 解释器(默认 `python`)
 
-输出: 根目录生成 `MusicConvert-v1.0.0-Windows-Full.zip` 和 `MusicConvert-v1.0.0-Windows-Lite.zip`。
+输出: 根目录生成 `音乐格式转换器-v1.0.0-Windows.zip`(完整版,含 FFmpeg,解压即用,约 94 MB)。
 
 ### 手动打包
 
