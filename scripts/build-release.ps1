@@ -130,7 +130,7 @@ Write-Host "总大小  : $TotalMB MB"
 
 # 7. 生成 release zip (完整版)
 Step "生成 release zip"
-$ReleaseZip = Join-Path $Root "$AppName-v1.0.0-Windows.zip"
+$ReleaseZip = Join-Path $Root "$AppName-v1.0.1-Windows.zip"
 
 if (Test-Path $ReleaseZip) { Remove-Item $ReleaseZip -Force }
 Compress-Archive -Path $DistDir -DestinationPath $ReleaseZip -CompressionLevel Optimal
