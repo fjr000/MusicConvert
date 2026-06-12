@@ -35,14 +35,14 @@ function Assert-ExitCode($what) {
 if (-not $Python) {
     $candidates = @("python", "python3", "py")
     foreach ($cmd in $candidates) {
-        try {
-            $null = & $cmd --version 2>&1
-            if ($LASTEXITCODE -eq 0) {
-                $Python = $cmd
-                break
-            }
-        } catch {
-            continue
+        $ErrorActionPreference = "SilentlyContinue"
+        $null = & $cmd --version 2>&1
+        $exitCode = $LASTEXITCODE
+        $ErrorActionPreference = "Stop"
+
+        if ($exitCode -eq 0) {
+            $Python = $cmd
+            break
         }
     }
     if (-not $Python) {
