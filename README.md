@@ -111,7 +111,7 @@ powershell -ExecutionPolicy Bypass -File scripts/build-release.ps1
 - `-SkipTools`：跳过第三方工具下载(要求 `tools/` 下已就位)
 - `-Python <路径>`：指定 Python 解释器(默认 `python`)
 
-输出: 根目录生成 `音乐格式转换器-v1.0.0-Windows.zip`(完整版,含 FFmpeg,解压即用,约 94 MB)。
+输出: 根目录生成 `音乐格式转换器-v1.0.0-Windows.zip`(包含 FFmpeg,解压即用,约 94 MB)。
 
 ### 手动打包
 
