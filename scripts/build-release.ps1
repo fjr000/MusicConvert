@@ -11,7 +11,7 @@
 param(
     [switch]$SkipDeps,
     [switch]$SkipTools,
-    [string]$Python = "python"
+    [string]$Python = ""
 )
 
 $ErrorActionPreference = "Stop"
@@ -31,7 +31,22 @@ function Assert-ExitCode($what) {
     }
 }
 
-# 0. 确认 Python 可用
+# 0. 自动检测 Python
+if (-not $Python) {
+    $candidates = @("python", "python3", "py")
+    foreach ($cmd in $candidates) {
+        $found = Get-Command $cmd -ErrorAction SilentlyContinue
+        if ($found) {
+            $Python = $cmd
+            break
+        }
+    }
+    if (-not $Python) {
+        throw "未找到 Python，请安装 Python 3 或通过 -Python 参数指定路径"
+    }
+}
+
+# 确认 Python 可用
 Step "检查 Python"
 & $Python --version
 Assert-ExitCode "Python 检查"
