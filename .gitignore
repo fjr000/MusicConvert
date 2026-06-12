@@ -1,3 +1,4 @@
+# Python
 __pycache__/
 *.pyc
 *.pyo
@@ -12,6 +13,7 @@ htmlcov/
 .env
 .env.*
 
+# PyInstaller
 build/
 dist/
 *.spec.bak
@@ -26,6 +28,14 @@ tools/musicdecrypto/*.exe
 
 # 本地下载/解压临时目录
 .tmp-tools/
+.tmp-ffmpeg/
+
+# Release zip 不入库
+*.zip
+
+# 开发工具
+.pi/
+.trellis/
 
 # 本地音频样本和转换输出不入库
 *.mp3

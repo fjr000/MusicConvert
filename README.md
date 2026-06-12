@@ -2,6 +2,29 @@
 
 一个面向 Windows 的音乐格式转换工具，支持常见音频格式和主流加密音频格式。
 
+[![Release](https://img.shields.io/github/v/release/fjr000/MusicConvert)](https://github.com/fjr000/MusicConvert/releases)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
+## 快速开始
+
+### 下载使用
+
+前往 [Releases](https://github.com/fjr000/MusicConvert/releases/latest) 下载:
+
+| 版本 | 大小 | 适用场景 |
+|------|------|----------|
+| **完整版** ⭐ | ~114 MB | **推荐** - 解压即用,无需联网 |
+| **精简版** | ~37 MB | 网络受限 - 首次启动需联网下载 FFmpeg (~50MB) |
+
+下载后解压,双击 `音乐格式转换器.exe` 启动。
+
+## 文档
+
+- 📖 [架构说明](docs/ARCHITECTURE.md)
+- 🔐 [加密格式研究](docs/ENCRYPTION_RESEARCH.md)
+- 📊 [测试报告](docs/encrypted_format_test_report.md)
+- 📝 [完整文档索引](docs/README.md)
+
 ## 功能特性
 
 - ✅ 单文件 / 批量文件转换
@@ -85,7 +108,11 @@ powershell -ExecutionPolicy Bypass -File scripts/setup-tools.ps1
 powershell -ExecutionPolicy Bypass -File scripts/build-release.ps1
 ```
 
-脚本会自动:安装 `requirements.txt` 依赖 → 检查/下载第三方工具 → 准备 `inputs`/`outputs` 目录 → 清理旧产物 → PyInstaller 打包 → 校验产物。
+脚本会自动生成两个版本:
+- **完整版**: 包含 FFmpeg,解压即用
+- **精简版**: 不含 FFmpeg,首次启动自动下载
+
+完整流程: 安装 `requirements.txt` 依赖 → 检查/下载第三方工具 → 准备 `inputs`/`outputs` 目录 → 清理旧产物 → PyInstaller 打包 → 生成两个 zip。
 
 可选开关:
 
@@ -93,7 +120,7 @@ powershell -ExecutionPolicy Bypass -File scripts/build-release.ps1
 - `-SkipTools`：跳过第三方工具下载(要求 `tools/` 下已就位)
 - `-Python <路径>`：指定 Python 解释器(默认 `python`)
 
-输出目录:`dist/音乐格式转换器/`,整个文件夹即为便携版,双击 `音乐格式转换器.exe` 运行。
+输出: 根目录生成 `MusicConvert-v1.0.0-Windows-Full.zip` 和 `MusicConvert-v1.0.0-Windows-Lite.zip`。
 
 ### 手动打包
 
